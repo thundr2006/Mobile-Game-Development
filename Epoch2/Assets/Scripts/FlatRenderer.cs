@@ -6,6 +6,9 @@ public class FlatRenderer : MonoBehaviour
 {
     [HideInInspector] public SpriteRenderer spriteRenderer; 
     public Vector3 position;
+    public delegate void AfterRenderPositionDelegate(ScriptableRenderContext context, Camera camera, Vector3 position);
+    public AfterRenderPositionDelegate AfterRenderPosition;
+
     void Start() {
         spriteRenderer = GetComponent<SpriteRenderer>();
         RenderPipelineManager.beginCameraRendering += onPreRenderCallback;
@@ -32,6 +35,8 @@ public class FlatRenderer : MonoBehaviour
 
         transform.position = camera.transform.position + camera.transform.TransformVector(new Vector3(scaledX, scaledY, magnitude));
         transform.rotation = camera.transform.rotation;
+
+        if (AfterRenderPosition!=null) AfterRenderPosition(context, camera, position);
     }
 
     void OnDestroy()

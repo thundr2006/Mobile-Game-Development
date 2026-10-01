@@ -4,6 +4,7 @@ using System.Collections; using System.Threading.Tasks; using System.Collections
 public class PlayerMovement : MonoBehaviour
 {
     public RectTransform joystick;
+    public Transform lockon;
     public Image up;
     public Image down;
     public Image left;
@@ -19,6 +20,9 @@ public class PlayerMovement : MonoBehaviour
 
     private Vector2 inputDirection;
     private float plrSprAngVel;
+
+    private GameObject currentTarget;
+    private float currentTargetsqrDistance;
 
     public void InputMove(InputAction.CallbackContext context) {
         inputDirection = context.ReadValue<Vector2>();
@@ -67,5 +71,13 @@ public class PlayerMovement : MonoBehaviour
 
         yield return new WaitForSeconds(vFPS);
         StartCoroutine(VisualUpdate());
+    }
+
+    public void LockOn(GameObject target, Vector3 position) {
+        if (target == currentTarget || (position-transform.position).sqrMagnitude < currentTargetsqrDistance) {
+            currentTargetsqrDistance = (position-transform.position).sqrMagnitude;
+            currentTarget = target;
+            lockon.position = target.transform.position-new Vector3(0,0,1f);
+        }
     }
 }
