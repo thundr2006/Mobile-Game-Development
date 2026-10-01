@@ -23,6 +23,8 @@ public class PlayerMovement : MonoBehaviour
 
     private GameObject currentTarget;
     private float currentTargetsqrDistance;
+    private float timeSinceLastLockOn;
+    private float minlockDistance = 15f;
 
     public void InputMove(InputAction.CallbackContext context) {
         inputDirection = context.ReadValue<Vector2>();
@@ -51,12 +53,19 @@ public class PlayerMovement : MonoBehaviour
         menu.color = (context.ReadValue<float>() > 0f) ? new Color(0f,1f,0f,1f) : new Color(1f,1f,1f,1f);
     }
 
-    void Update() {
+    void FixedUpdate() {
         plrSprAngVel = Mathf.Lerp(plrSprAngVel,inputDirection.x,0.1f);
         PlayerSprite.transform.localRotation = Quaternion.Euler(0f,0f,-15f*plrSprAngVel);
+
+        if (Time.time-timeSinceLastLockOn < 5f && currentTarget && currentTarget.GetComponent<Target>().enabled && Mathf.Abs((currentTarget.GetComponent<FlatRenderer>().position-transform.position).z) < minlockDistance) {} else {
+            lockon.position = new Vector3(0,0,0);
+            currentTargetsqrDistance = Mathf.Infinity;
+            currentTarget = null;
+        }
     }
 
     void Start() {
+        currentTargetsqrDistance = Mathf.Infinity;
         vFPS = 1/15f;
         StartCoroutine(VisualUpdate());
     }
@@ -74,9 +83,11 @@ public class PlayerMovement : MonoBehaviour
     }
 
     public void LockOn(GameObject target, Vector3 position) {
+        if (Mathf.Abs((target.GetComponent<FlatRenderer>().position-transform.position).z) >= minlockDistance) return;
         if (target == currentTarget || (position-transform.position).sqrMagnitude < currentTargetsqrDistance) {
             currentTargetsqrDistance = (position-transform.position).sqrMagnitude;
             currentTarget = target;
+            timeSinceLastLockOn = Time.time;
             lockon.position = target.transform.position-new Vector3(0,0,1f);
         }
     }
