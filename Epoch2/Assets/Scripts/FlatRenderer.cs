@@ -31,6 +31,7 @@ public class FlatRenderer : MonoBehaviour
         float magnitude = localDelta.magnitude;
 
         transform.position = camera.transform.position + camera.transform.TransformVector(new Vector3(scaledX, scaledY, magnitude));
+        transform.rotation = camera.transform.rotation;
     }
 
     void OnDestroy()
