@@ -34,7 +34,8 @@ public class FlatRenderer : MonoBehaviour
         float magnitude = localDelta.magnitude;
 
         transform.position = camera.transform.position + camera.transform.TransformVector(new Vector3(scaledX, scaledY, magnitude));
-        transform.rotation = camera.transform.rotation;
+
+        transform.rotation = camera.transform.rotation*Quaternion.Euler(0f,0f,15f*camera.GetComponent<PlayerController>().plrSprAngVel);
 
         if (AfterRenderPosition!=null) AfterRenderPosition(context, camera, position);
     }

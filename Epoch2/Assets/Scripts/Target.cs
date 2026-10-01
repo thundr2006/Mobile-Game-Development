@@ -8,7 +8,6 @@ public class Target : MonoBehaviour
 
     void AfterRenderPosition(ScriptableRenderContext context, Camera camera, Vector3 position) { // lockon
         if (this.enabled==false) return; // if disabled dont run
-        if (!camera.GetComponent<PlayerMovement>()) return;
-        camera.GetComponent<PlayerMovement>().LockOn(gameObject, position);
+        camera.GetComponent<PlayerController>().LockOn(gameObject, position);
     }
 }
