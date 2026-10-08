@@ -28,17 +28,11 @@ public class PlayerController : MonoBehaviour
 
     public void InputMove(InputAction.CallbackContext context) {
         inputDirection = context.ReadValue<Vector2>();
-
-        up.color = (inputDirection.y > 0f) ? new Color(0f,1f,0f,1f) : new Color(1f,1f,1f,1f);
-        down.color = (inputDirection.y < 0f) ? new Color(0f,1f,0f,1f) : new Color(1f,1f,1f,1f);
-        left.color = (inputDirection.x < 0f) ? new Color(0f,1f,0f,1f) : new Color(1f,1f,1f,1f);
-        right.color = (inputDirection.x > 0f) ? new Color(0f,1f,0f,1f) : new Color(1f,1f,1f,1f);
-
         if (inputDirection==Vector2.zero) {
-            joystick.anchoredPosition = new Vector2(-400f, -150f);
+            joystick.anchoredPosition = new Vector2(245f, 150f);
             return;
         }
-        joystick.anchoredPosition = new Vector2(-400f+(50f*inputDirection.x), -150f+(50f*inputDirection.y));
+        joystick.anchoredPosition = new Vector2(245f+(50f*inputDirection.x), 150f+(50f*inputDirection.y));
     }
 
     public void InputShoot(InputAction.CallbackContext context) {
