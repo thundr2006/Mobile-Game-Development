@@ -36,27 +36,26 @@ public class PlayerController : MonoBehaviour
     private Vector2 inputDirection;
 
     public void InputMove(InputAction.CallbackContext context) {
-        if (PlayerController.Paused) return;
+        if (Paused) return;
         inputDirection = context.ReadValue<Vector2>();
     }
 
     public void InputShoot(InputAction.CallbackContext context) {
-        if (PlayerController.Paused) return;
+        if (Paused) return;
         //(context.ReadValue<float>() > 0f)
     }
 
     public void InputSwap(InputAction.CallbackContext context) {
-        if (PlayerController.Paused) return;
+        if (Paused) return;
     }
 
     public void InputMenu(InputAction.CallbackContext context) {
-        if (PlayerController.Paused) return;
-        PlayerController.Singleton.Pause();
+        Singleton.Pause(!Paused);
     }
     
-    public void Pause() {
-        Settings.Paused = true;
-        Paused = true;
+    public void Pause(bool pauseState) {
+        Settings.Paused = pauseState;
+        OnValidate(); // validate settings
     }
 
     public void LockOnTarget(GameObject target, Vector3 realPosition, Vector3 position) {
@@ -102,8 +101,10 @@ public class PlayerController : MonoBehaviour
         visualFPS = 1/30f;
         StartCoroutine(VisualUpdate());
     }
-    private void OnValidate() { // on inspector update
+    void OnValidate() { // on inspector update
         InverseFOV = Settings.Scale / Mathf.Tan(Mathf.Deg2Rad * Settings.FOV/2);
         Paused = Settings.Paused;
+
+        GUI.GUIPause.SetActive(Paused);
     }
 }
