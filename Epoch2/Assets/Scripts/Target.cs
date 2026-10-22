@@ -6,8 +6,8 @@ public class Target : MonoBehaviour
         GetComponent<FlatRenderer>().AfterRenderPosition += AfterRenderPosition;
     }
 
-    void AfterRenderPosition(ScriptableRenderContext context, Camera camera, Vector3 position) { // lockon
+    void AfterRenderPosition(ScriptableRenderContext context, Camera camera, Vector3 realPosition, Vector3 position) { // lockon
         if (this.enabled==false) return; // if disabled dont run
-        camera.GetComponent<PlayerController>().LockOn(gameObject, position);
+        GameHandler.Singleton.LockOnTarget(gameObject, realPosition, position);
     }
 }

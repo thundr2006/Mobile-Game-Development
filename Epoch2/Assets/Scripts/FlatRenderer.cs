@@ -6,7 +6,7 @@ public class FlatRenderer : MonoBehaviour
 {
     [HideInInspector] public SpriteRenderer spriteRenderer; 
     public Vector3 position;
-    public delegate void AfterRenderPositionDelegate(ScriptableRenderContext context, Camera camera, Vector3 position);
+    public delegate void AfterRenderPositionDelegate(ScriptableRenderContext context, Camera camera, Vector3 realPosition, Vector3 position);
     public AfterRenderPositionDelegate AfterRenderPosition;
 
     void Start() {
@@ -26,7 +26,7 @@ public class FlatRenderer : MonoBehaviour
         };
         spriteRenderer.enabled = true;
 
-        float scaleFactor = GameHandler.main.inverseFieldOfView / (localDelta.z );
+        float scaleFactor = GameHandler.InverseFOV / (localDelta.z );
         transform.localScale = new Vector3(1,1,1) * scaleFactor;
 
         float scaledX = localDelta.x * scaleFactor;
@@ -35,9 +35,9 @@ public class FlatRenderer : MonoBehaviour
 
         transform.position = camera.transform.position + camera.transform.TransformVector(new Vector3(scaledX, scaledY, magnitude));
 
-        transform.rotation = camera.transform.rotation*Quaternion.Euler(0f,0f,15f*camera.GetComponent<PlayerController>().plrSprAngVel);
+        //transform.rotation = camera.transform.rotation*Quaternion.Euler(0f,0f,15f*camera.GetComponent<PlayerController>().plrSprAngVel);
 
-        if (AfterRenderPosition!=null) AfterRenderPosition(context, camera, position);
+        if (AfterRenderPosition!=null) AfterRenderPosition(context, camera, position, transform.position);
     }
 
     void OnDestroy()
