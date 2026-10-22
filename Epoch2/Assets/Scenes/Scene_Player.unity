@@ -1084,6 +1084,7 @@ MonoBehaviour:
     FOV: 70
     Scale: 5
     MinLockDistance: 15
+    PlayerSpeed: 50
   GUI:
     GUIGameplay: {fileID: 2068352099}
     GUIPause: {fileID: 1406665568}
@@ -1548,7 +1549,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 924195451}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 662511753}
+        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
+        m_MethodName: SendMessage
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Pause
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &924195451
 MonoBehaviour:
   m_ObjectHideFlags: 0

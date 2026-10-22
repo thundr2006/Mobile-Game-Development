@@ -10,9 +10,10 @@ public class PlayerController : MonoBehaviour
         public float Scale;
 
         public float MinLockDistance;
+        public float PlayerSpeed;
 
         public GameSettings(int ignore) {
-            Paused = false; FOV = 70f; Scale = 5f; MinLockDistance = 15f;
+            Paused = false; FOV = 70f; Scale = 5f; MinLockDistance = 15f; PlayerSpeed = 50f;
         }
     }
     [System.Serializable] public struct GUIReferences {
@@ -50,11 +51,11 @@ public class PlayerController : MonoBehaviour
     }
 
     public void InputMenu(InputAction.CallbackContext context) {
-        Singleton.Pause(!Paused);
+        Pause();
     }
     
-    public void Pause(bool pauseState) {
-        Settings.Paused = pauseState;
+    public void Pause() {
+        Settings.Paused = !Paused;
         OnValidate(); // validate settings
     }
 
@@ -73,10 +74,10 @@ public class PlayerController : MonoBehaviour
         if (PlayerController.Paused) yield return new WaitUntil(()=> !PlayerController.Paused);
 
         if (inputDirection.x > 0f) { // right
-            transform.rotation *= Quaternion.Euler(0,0,10f * visualFPS);
+            transform.rotation *= Quaternion.Euler(0,0,Settings.PlayerSpeed * visualFPS);
             
         } else if (inputDirection.x != 0f) { //left
-            transform.rotation *= Quaternion.Euler(0,0,-10f * visualFPS);
+            transform.rotation *= Quaternion.Euler(0,0,-Settings.PlayerSpeed * visualFPS);
         }
 
         if ( Time.time-lockOnTime > 5f || !lockOnTarget || !lockOnTarget.GetComponent<Target>().enabled ) {} else {
@@ -104,6 +105,7 @@ public class PlayerController : MonoBehaviour
     void OnValidate() { // on inspector update
         InverseFOV = Settings.Scale / Mathf.Tan(Mathf.Deg2Rad * Settings.FOV/2);
         Paused = Settings.Paused;
+        inputDirection = Vector2.zero;
 
         GUI.GUIPause.SetActive(Paused);
     }
