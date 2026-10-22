@@ -26,7 +26,7 @@ public class FlatRenderer : MonoBehaviour
         };
         spriteRenderer.enabled = true;
 
-        float scaleFactor = GameHandler.InverseFOV / (localDelta.z );
+        float scaleFactor = PlayerController.InverseFOV / (localDelta.z );
         transform.localScale = new Vector3(1,1,1) * scaleFactor;
 
         float scaledX = localDelta.x * scaleFactor;

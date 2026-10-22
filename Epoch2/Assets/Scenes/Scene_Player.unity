@@ -207,7 +207,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.98, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -518,7 +518,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 2.43, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -829,53 +829,6 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
---- !u!1 &526740675
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 526740677}
-  - component: {fileID: 526740676}
-  m_Layer: 0
-  m_Name: GameHandler
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &526740676
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 526740675}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 459c84621dd1f5a4c8fe8d4c277aa7c0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GameHandler
-  inverseFieldOfView: 7.14074
-  FieldOfView: 70
-  GlobalScaleFactor: 5
---- !u!4 &526740677
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 526740675}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.55811, y: -2.30445, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &662511746
 GameObject:
   m_ObjectHideFlags: 0
@@ -889,7 +842,7 @@ GameObject:
   - component: {fileID: 662511749}
   - component: {fileID: 662511748}
   - component: {fileID: 662511752}
-  - component: {fileID: 662511751}
+  - component: {fileID: 662511753}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -1020,29 +973,6 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
---- !u!114 &662511751
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 662511746}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ee6b01d28c5bca44780615b21ab047d4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
-  joystick: {fileID: 0}
-  lockon: {fileID: 128657275}
-  up: {fileID: 0}
-  down: {fileID: 0}
-  left: {fileID: 0}
-  right: {fileID: 0}
-  shoot: {fileID: 1967146879}
-  swap: {fileID: 2014611927}
-  menu: {fileID: 1123620979}
-  PlayerSprite: {fileID: 304985629}
-  plrSprAngVel: 0
 --- !u!114 &662511752
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1070,8 +1000,8 @@ MonoBehaviour:
   m_ActionEvents:
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 662511751}
-        m_TargetAssemblyTypeName: PlayerMovement, Assembly-CSharp
+      - m_Target: {fileID: 662511753}
+        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
         m_MethodName: InputMove
         m_Mode: 0
         m_Arguments:
@@ -1086,8 +1016,8 @@ MonoBehaviour:
     m_ActionName: 'Player/Move[/Keyboard/w,/Keyboard/upArrow,/Keyboard/s,/Keyboard/downArrow,/Keyboard/a,/Keyboard/leftArrow,/Keyboard/d,/Keyboard/rightArrow]'
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 662511751}
-        m_TargetAssemblyTypeName: PlayerMovement, Assembly-CSharp
+      - m_Target: {fileID: 662511753}
+        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
         m_MethodName: InputShoot
         m_Mode: 0
         m_Arguments:
@@ -1102,8 +1032,8 @@ MonoBehaviour:
     m_ActionName: 'Player/Shoot[/Keyboard/space]'
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 662511751}
-        m_TargetAssemblyTypeName: PlayerMovement, Assembly-CSharp
+      - m_Target: {fileID: 662511753}
+        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
         m_MethodName: InputSwap
         m_Mode: 0
         m_Arguments:
@@ -1118,8 +1048,8 @@ MonoBehaviour:
     m_ActionName: 'Player/Swap[/Keyboard/e]'
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 662511751}
-        m_TargetAssemblyTypeName: PlayerMovement, Assembly-CSharp
+      - m_Target: {fileID: 662511753}
+        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
         m_MethodName: InputMenu
         m_Mode: 0
         m_Arguments:
@@ -1137,6 +1067,27 @@ MonoBehaviour:
   m_DefaultActionMap: 
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 662511750}
+--- !u!114 &662511753
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 662511746}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee6b01d28c5bca44780615b21ab047d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameHandler
+  Settings:
+    Paused: 0
+    FOV: 70
+    Scale: 5
+    MinLockDistance: 15
+  GUI:
+    GUIGameplay: {fileID: 2068352099}
+    GUIPause: {fileID: 1406665568}
+    LockOn: {fileID: 128657276}
 --- !u!1 &759118434
 GameObject:
   m_ObjectHideFlags: 0
@@ -1234,7 +1185,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &786542559
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2317,5 +2268,4 @@ SceneRoots:
   - {fileID: 75952830}
   - {fileID: 1776451492}
   - {fileID: 150191243}
-  - {fileID: 526740677}
   - {fileID: 662511747}
