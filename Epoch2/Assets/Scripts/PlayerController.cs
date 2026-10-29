@@ -1,90 +1,124 @@
 using UnityEngine; using UnityEngine.UI; using UnityEngine.InputSystem;
-using System.Collections; using System.Threading.Tasks; using System.Collections.Generic;
+using System.Collections; using System.Collections.Generic;
 
 public class PlayerController : MonoBehaviour
-{
-    public RectTransform joystick;
-    public Transform lockon;
-    public Image up;
-    public Image down;
-    public Image left;
-    public Image right;
+{   
+    [System.Serializable] public struct GameSettings {
+        public bool Paused; // for debug purposes
 
-    public Image shoot;
-    public Image swap;
-    public Image menu;
+        public float FOV;
+        public float Scale;
 
-    public SpriteRenderer PlayerSprite;
+        public float MinLockDistance;
+        public float PlayerSpeed;
 
-    private float vFPS;
+        public GameSettings(int ignore) {
+            Paused = false; FOV = 70f; Scale = 5f; MinLockDistance = 15f; PlayerSpeed = 50f;
+        }
+    }
+    [System.Serializable] public struct GUIReferences {
+        public GameObject GUIGameplay;
+        public GameObject GUIPause;
+        public SpriteRenderer LockOn;
 
+        public Image ButtonShoot;
+        public Image ButtonSwap;
+        public Image ButtonMenu;
+
+        public CanvasScaler[] CanvasScalers;
+    }
+
+    public static PlayerController Singleton;
+    public static float InverseFOV;
+    public static bool Paused; // real paused
+
+    public GameSettings Settings = new GameSettings(1);
+    public GUIReferences GUI;
+
+    private GameObject lockOnTarget; 
+    private float lockOnDistance = Mathf.Infinity; 
+    private float lockOnTime;
+
+    private float visualFPS;
     private Vector2 inputDirection;
-    [HideInInspector] public float plrSprAngVel;
-
-    private GameObject currentTarget;
-    private float currentTargetsqrDistance;
-    private float timeSinceLastLockOn;
-    private float minlockDistance = 15f;
 
     public void InputMove(InputAction.CallbackContext context) {
+        if (Paused) return;
         inputDirection = context.ReadValue<Vector2>();
-        if (inputDirection==Vector2.zero) {
-            joystick.anchoredPosition = new Vector2(245f, 150f);
-            return;
-        }
-        joystick.anchoredPosition = new Vector2(245f+(50f*inputDirection.x), 150f+(50f*inputDirection.y));
     }
 
     public void InputShoot(InputAction.CallbackContext context) {
-        shoot.color = (context.ReadValue<float>() > 0f) ? new Color(0f,1f,0f,1f) : new Color(1f,1f,1f,1f);
+        if (Paused) return;
+        GUI.ButtonShoot.color = context.ReadValue<float>() > 0f ? new Color(0.6886792f,0.6886792f,0.6886792f,1f) : new Color(1f,1f,1f,1f);
     }
 
     public void InputSwap(InputAction.CallbackContext context) {
-        swap.color = (context.ReadValue<float>() > 0f) ? new Color(0f,1f,0f,1f) : new Color(1f,1f,1f,1f);
+        if (Paused) return;
+        GUI.ButtonSwap.color = context.ReadValue<float>() > 0f ? new Color(0.6886792f,0.6886792f,0.6886792f,1f) : new Color(1f,1f,1f,1f);
     }
 
     public void InputMenu(InputAction.CallbackContext context) {
-        menu.color = (context.ReadValue<float>() > 0f) ? new Color(0f,1f,0f,1f) : new Color(1f,1f,1f,1f);
+        GUI.ButtonMenu.color = context.ReadValue<float>() > 0f ? new Color(0.6886792f,0.6886792f,0.6886792f,1f) : new Color(1f,1f,1f,1f);
+        Pause();
+    }
+    
+    public void Pause() {
+        Settings.Paused = !Paused;
+        OnValidate(); // validate settings
     }
 
-    void FixedUpdate() {
-        plrSprAngVel = Mathf.Lerp(plrSprAngVel,inputDirection.x,0.1f);
-        PlayerSprite.transform.localRotation = Quaternion.Euler(0f,0f,-15f*plrSprAngVel);
-        transform.position += transform.rotation * inputDirection*15f * Time.fixedDeltaTime;
-
-        if (Time.time-timeSinceLastLockOn < 5f && currentTarget && currentTarget.GetComponent<Target>().enabled && Mathf.Abs((currentTarget.GetComponent<FlatRenderer>().position-transform.position).z) < minlockDistance) {} else {
-            lockon.position = new Vector3(0,0,0);
-            currentTargetsqrDistance = Mathf.Infinity;
-            currentTarget = null;
+    public void LockOnTarget(GameObject target, Vector3 realPosition, Vector3 position) {
+        if (position.z-transform.position.z >= Settings.MinLockDistance) return; // out of range
+        float sqrDistance = (realPosition-transform.position).sqrMagnitude;
+        if (target == lockOnTarget || sqrDistance < lockOnDistance) { //is the existing target or is closer
+            lockOnTarget = target;
+            lockOnDistance = sqrDistance; 
+            lockOnTime = Time.time;
+            GUI.LockOn.transform.position = position - new Vector3(0,0,1f);
         }
+    }
+
+    IEnumerator VisualUpdate() { // visual update loop
+        if (PlayerController.Paused) yield return new WaitUntil(()=> !PlayerController.Paused);
+
+        if (inputDirection.x > 0f) { // right
+            transform.rotation *= Quaternion.Euler(0,0,Settings.PlayerSpeed * visualFPS);
+            
+        } else if (inputDirection.x != 0f) { //left
+            transform.rotation *= Quaternion.Euler(0,0,-Settings.PlayerSpeed * visualFPS);
+        }
+
+        if ( Time.time-lockOnTime > 5f || !lockOnTarget || !lockOnTarget.GetComponent<Target>().enabled ) {} else {
+            GUI.LockOn.transform.position = new Vector3(0,0,0);
+            lockOnDistance = Mathf.Infinity;
+            lockOnTarget = null;
+        }
+        
+        yield return new WaitForSeconds(visualFPS);
+        StartCoroutine(VisualUpdate());
+    }
+
+    void Awake() { // singleton logic
+        if (Singleton){ Destroy(gameObject); return;}
+        Singleton = this;
+        DontDestroyOnLoad(gameObject); //persistent
     }
 
     void Start() {
-        currentTargetsqrDistance = Mathf.Infinity;
-        vFPS = 1/30f;
-        StartCoroutine(VisualUpdate());
-    }
-
-    IEnumerator VisualUpdate() {
-        if (inputDirection.x > 0f) { // right
-            transform.rotation *= Quaternion.Euler(0,0,10f * vFPS);
-            
-        } else if (inputDirection.x != 0f) { //left
-            transform.rotation *= Quaternion.Euler(0,0,-10f * vFPS);
+        OnValidate(); // validate settings
+        float scaleRatio = (GetComponent<Camera>().pixelWidth/GetComponent<Camera>().pixelHeight);
+        foreach (CanvasScaler scaler in GUI.CanvasScalers) {
+            scaler.referenceResolution = (scaleRatio < 1.45) ? new Vector2(1000,850): new Vector2(1000, 650);
         }
         
-        yield return new WaitForSeconds(vFPS);
+        visualFPS = 1/30f;
         StartCoroutine(VisualUpdate());
     }
+    void OnValidate() { // on inspector update
+        InverseFOV = Settings.Scale / Mathf.Tan(Mathf.Deg2Rad * Settings.FOV/2);
+        Paused = Settings.Paused;
+        inputDirection = Vector2.zero;
 
-    public void LockOn(GameObject target, Vector3 position) {
-        if (Mathf.Abs((target.GetComponent<FlatRenderer>().position-transform.position).z) >= minlockDistance) return;
-        float sqrDistance = (position-transform.position).sqrMagnitude;
-        if (target == currentTarget || sqrDistance < currentTargetsqrDistance) {
-            currentTargetsqrDistance = sqrDistance;
-            currentTarget = target;
-            timeSinceLastLockOn = Time.time;
-            lockon.position = target.transform.position-new Vector3(0,0,1f);
-        }
+        GUI.GUIPause.SetActive(Paused);
     }
 }
