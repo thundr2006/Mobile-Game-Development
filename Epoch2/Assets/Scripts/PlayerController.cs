@@ -20,6 +20,12 @@ public class PlayerController : MonoBehaviour
         public GameObject GUIGameplay;
         public GameObject GUIPause;
         public SpriteRenderer LockOn;
+
+        public Image ButtonShoot;
+        public Image ButtonSwap;
+        public Image ButtonMenu;
+
+        public CanvasScaler[] CanvasScalers;
     }
 
     public static PlayerController Singleton;
@@ -43,14 +49,16 @@ public class PlayerController : MonoBehaviour
 
     public void InputShoot(InputAction.CallbackContext context) {
         if (Paused) return;
-        //(context.ReadValue<float>() > 0f)
+        GUI.ButtonShoot.color = context.ReadValue<float>() > 0f ? new Color(0.6886792f,0.6886792f,0.6886792f,1f) : new Color(1f,1f,1f,1f);
     }
 
     public void InputSwap(InputAction.CallbackContext context) {
         if (Paused) return;
+        GUI.ButtonSwap.color = context.ReadValue<float>() > 0f ? new Color(0.6886792f,0.6886792f,0.6886792f,1f) : new Color(1f,1f,1f,1f);
     }
 
     public void InputMenu(InputAction.CallbackContext context) {
+        GUI.ButtonMenu.color = context.ReadValue<float>() > 0f ? new Color(0.6886792f,0.6886792f,0.6886792f,1f) : new Color(1f,1f,1f,1f);
         Pause();
     }
     
@@ -98,7 +106,11 @@ public class PlayerController : MonoBehaviour
 
     void Start() {
         OnValidate(); // validate settings
-
+        float scaleRatio = (GetComponent<Camera>().pixelWidth/GetComponent<Camera>().pixelHeight);
+        foreach (CanvasScaler scaler in GUI.CanvasScalers) {
+            scaler.referenceResolution = (scaleRatio < 1.45) ? new Vector2(1000,850): new Vector2(1000, 650);
+        }
+        
         visualFPS = 1/30f;
         StartCoroutine(VisualUpdate());
     }
