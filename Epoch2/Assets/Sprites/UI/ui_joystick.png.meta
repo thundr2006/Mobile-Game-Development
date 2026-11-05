@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 530165e6940c85a458f22afb1436b7d0
+guid: 474ae78e4db62b7419fab10bb1a1f151
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 7692499163851092970
-    second: ui_joystick_0
+      213: -8486856934049713686
+    second: ui_joystick 1_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -72,7 +72,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 1024
+    maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 2
@@ -178,13 +178,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: ui_joystick_0
+      name: ui_joystick 1_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 0
+        y: 17
         width: 64
-        height: 64
+        height: 30
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -193,8 +193,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: ae37550ab3f31ca60800000000000000
-      internalID: 7692499163851092970
+      spriteID: ae1f7627590a83a80800000000000000
+      internalID: -8486856934049713686
       vertices: []
       indices: 
       edges: []
@@ -213,7 +213,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      ui_joystick_0: 7692499163851092970
+      ui_joystick 1_0: -8486856934049713686
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -10,10 +10,10 @@ public class PlayerController : MonoBehaviour
         public float Scale;
 
         public float MinLockDistance;
-        public float PlayerSpeed;
+        public float PlayerAngle;
 
         public GameSettings(int ignore) {
-            Paused = false; FOV = 70f; Scale = 5f; MinLockDistance = 15f; PlayerSpeed = 50f;
+            Paused = false; FOV = 70f; Scale = 5f; MinLockDistance = 15f; PlayerAngle = 20f;
         }
     }
     [System.Serializable] public struct GUIReferences {
@@ -24,6 +24,9 @@ public class PlayerController : MonoBehaviour
         public Image ButtonShoot;
         public Image ButtonSwap;
         public Image ButtonMenu;
+
+        public RectTransform Joystick;
+        public RectTransform PlayerShip;
 
         public CanvasScaler[] CanvasScalers;
     }
@@ -38,6 +41,7 @@ public class PlayerController : MonoBehaviour
     private GameObject lockOnTarget; 
     private float lockOnDistance = Mathf.Infinity; 
     private float lockOnTime;
+    private Vector3 lockOnSourcePosition;
 
     private float visualFPS;
     private Vector2 inputDirection;
@@ -68,8 +72,8 @@ public class PlayerController : MonoBehaviour
     }
 
     public void LockOnTarget(GameObject target, Vector3 realPosition, Vector3 position) {
-        if (position.z-transform.position.z >= Settings.MinLockDistance) return; // out of range
-        float sqrDistance = (realPosition-transform.position).sqrMagnitude;
+        if (position.z-lockOnSourcePosition.z >= Settings.MinLockDistance) return; // out of range
+        float sqrDistance = (realPosition-lockOnSourcePosition).sqrMagnitude;
         if (target == lockOnTarget || sqrDistance < lockOnDistance) { //is the existing target or is closer
             lockOnTarget = target;
             lockOnDistance = sqrDistance; 
@@ -81,13 +85,9 @@ public class PlayerController : MonoBehaviour
     IEnumerator VisualUpdate() { // visual update loop
         if (PlayerController.Paused) yield return new WaitUntil(()=> !PlayerController.Paused);
 
-        if (inputDirection.x > 0f) { // right
-            transform.rotation *= Quaternion.Euler(0,0,Settings.PlayerSpeed * visualFPS);
-            
-        } else if (inputDirection.x != 0f) { //left
-            transform.rotation *= Quaternion.Euler(0,0,-Settings.PlayerSpeed * visualFPS);
-        }
-
+        GUI.PlayerShip.transform.rotation = Quaternion.Slerp(GUI.PlayerShip.transform.rotation, Quaternion.Euler(0,0,inputDirection.x*Settings.PlayerAngle),0.185f);
+        lockOnSourcePosition = Vector3.Lerp(lockOnSourcePosition, transform.position + new Vector3(inputDirection.x*5,0,0), 0.185f);
+        
         if ( Time.time-lockOnTime > 5f || !lockOnTarget || !lockOnTarget.GetComponent<Target>().enabled ) {} else {
             GUI.LockOn.transform.position = new Vector3(0,0,0);
             lockOnDistance = Mathf.Infinity;
@@ -106,6 +106,7 @@ public class PlayerController : MonoBehaviour
 
     void Start() {
         OnValidate(); // validate settings
+        lockOnSourcePosition = transform.position;
         float scaleRatio = (GetComponent<Camera>().pixelWidth/GetComponent<Camera>().pixelHeight);
         foreach (CanvasScaler scaler in GUI.CanvasScalers) {
             scaler.referenceResolution = (scaleRatio < 1.45) ? new Vector2(1000,850): new Vector2(1000, 650);

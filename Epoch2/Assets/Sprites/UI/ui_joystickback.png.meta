@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: d885d81e529b21b40b7afdfffa81d58f
+guid: 059bee5952cd8b74f980dbcccba3b87c
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 185249304468842677
-    second: ui_joystickback_0
+      213: -76776517267228354
+    second: ui_joystickback 1_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -72,7 +72,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 1024
+    maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 2
@@ -178,7 +178,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: ui_joystickback_0
+      name: ui_joystickback 1_0
       rect:
         serializedVersion: 2
         x: 0
@@ -193,8 +193,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 5b8e0cbc243229200800000000000000
-      internalID: 185249304468842677
+      spriteID: e39f1311a2c3feef0800000000000000
+      internalID: -76776517267228354
       vertices: []
       indices: 
       edges: []
@@ -213,7 +213,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      ui_joystickback_0: 185249304468842677
+      ui_joystickback 1_0: -76776517267228354
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
