@@ -136,7 +136,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &27869128
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5502,6 +5502,7 @@ MonoBehaviour:
     m_Interactions: 
     m_SingletonActionBindings: []
     m_Flags: 0
+    m_Priority: 0
   m_PointerMoveAction:
     m_Name: Pointer Move
     m_Type: 0
@@ -5511,6 +5512,7 @@ MonoBehaviour:
     m_Interactions: 
     m_SingletonActionBindings: []
     m_Flags: 0
+    m_Priority: 0
 --- !u!114 &323170269
 MonoBehaviour:
   m_ObjectHideFlags: 0
