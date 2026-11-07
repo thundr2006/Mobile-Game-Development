@@ -4,9 +4,14 @@ using System.Linq;
 public class PlayerProjectile : Entity
 {
     public float damage = 0;
+    public float destroyTimer = 15f;
     public Vector3 velocity;
     private Entity[] collidedEntities;
     private int collisionsRemaining=1;
+
+    void Start() {
+        Destroy(gameObject, destroyTimer);
+    }
 
     void FixedUpdate() {
         transform.position += velocity*Time.fixedDeltaTime;
