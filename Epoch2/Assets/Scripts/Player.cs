@@ -23,7 +23,7 @@ public class Player : MonoBehaviour
 
         GameObject projectile = Instantiate(
             attacks[currentAttackIndex].prefab, 
-            transform.position, 
+            ship.position, 
             Quaternion.identity);
     }
 
@@ -34,7 +34,6 @@ public class Player : MonoBehaviour
 
     public IEnumerator VisualUpdate() {
         ship.localRotation = Quaternion.Slerp(ship.localRotation, Quaternion.Euler(0,0,inputDirection.x*20),0.185f);
-        print(inputDirection);
         ship.localPosition = Vector3.Slerp(ship.localPosition, Quaternion.Euler(0,0,inputDirection.x*20)*shipOffset,0.185f);
 
         yield return new WaitForSeconds(visualSPF);
