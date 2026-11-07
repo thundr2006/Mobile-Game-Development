@@ -12,7 +12,6 @@ public class PlayerProjectile : Entity
         transform.position += velocity*Time.fixedDeltaTime;
     }
     public virtual void OnTriggerEnter(Collider other) {
-        print("Collided!");
         Entity entity = other.GetComponent<Entity>();
         if (!entity) return; //If it didnt collide with an entity.. return!
         if (other.GetComponent<Player>()) return; //Collided with the player, return!
