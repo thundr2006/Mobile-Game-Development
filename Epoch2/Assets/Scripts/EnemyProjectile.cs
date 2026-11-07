@@ -1,10 +1,14 @@
 using UnityEngine;
-using System.Linq;
 
 public class EnemyProjectile : Entity
 {
-    public float damage = 0;
+    public float damage = 0f;
+    public float destroyTimer = 15f;
     public Vector3 velocity;
+
+    void Start() {
+        Destroy(gameObject, destroyTimer);
+    }
 
     void FixedUpdate() {
         transform.position += velocity*Time.fixedDeltaTime;
