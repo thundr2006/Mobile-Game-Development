@@ -11,4 +11,10 @@ public class Entity : MonoBehaviour
         health-=amount;
         health= health < 0 ? 0 : health; //Forces health to be greater than 0.
     }
+
+    void FixedUpdate() {
+        if (Player.Singleton && canLockOn) {
+            Player.Singleton.TryLockOn(this);
+        }
+    }
 }
