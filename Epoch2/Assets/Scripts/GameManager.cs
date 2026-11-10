@@ -3,7 +3,8 @@ using UnityEngine;
 public enum GameState {
     Running,
     Paused,
-    Loading
+    Loading,
+    Saving
 }
 
 public class GameManager : MonoBehaviour
@@ -18,6 +19,6 @@ public class GameManager : MonoBehaviour
     }
 
     void Start() {
-        gameState = = GameState.Loading;
+        gameState = GameState.Loading;
     }
 }
