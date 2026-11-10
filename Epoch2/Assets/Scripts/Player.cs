@@ -81,6 +81,7 @@ public class Player : MonoBehaviour
     void Awake() {
         if (Singleton) { Destroy(gameObject); return; } //If a player already exists, don't create a new one!!
         Singleton = this;
+        DontDestroyOnLoad(gameObject); //persist
     }
 
     void Start() {
