@@ -38,6 +38,9 @@ public class Player : MonoBehaviour
         }
     }
 
+    public void Pause() {
+        
+    }
 
     public void Move(InputAction.CallbackContext context) {
         inputDirection = context.ReadValue<Vector2>();
