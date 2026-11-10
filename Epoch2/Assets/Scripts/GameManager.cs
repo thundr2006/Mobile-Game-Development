@@ -23,19 +23,40 @@ public class GameManager : MonoBehaviour
 
     void Start() {
         gameState = GameState.Loading;
+        LoadGame();
     }
 
-    public bool SaveGame() {
-        
+    public void SaveGame() {
+        string jsonData = JsonUtility.ToJson(currentSave);
+        string filePath = Application.persistentDataPath + "/saveData.json";
+        System.IO.File.WriteAllText(filePath, jsonData);
     }
 
     public SaveData LoadGame() {
+        string filePath = Application.persistentDataPath + "/saveData.json";
+        bool fileLoaded = false;
 
+        if (System.IO.File.Exists(filePath)) {
+            string jsonData = System.IO.File.ReadAllText(filePath);
+            if (jsonData!="") {
+                currentSave = JsonUtility.FromJson<SaveData>(jsonData);
+                fileLoaded = true;
+            }
+        }
+
+        if (fileLoaded == false) {
+            currentSave = new SaveData();
+        }
+        return currentSave;
     }
 }
 
 public struct SaveData {
     public string version;
+
+    public SaveData(string Version) {
+        version = Version;
+    } 
 }
 
 
