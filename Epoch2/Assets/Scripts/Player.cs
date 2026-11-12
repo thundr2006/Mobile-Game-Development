@@ -42,8 +42,11 @@ public class Player : MonoBehaviour
     }
 
     public void Pause() {
+        if (GameManager.Singleton.gameState!=GameState.Running) return;
         GameManager.Singleton.gameState = GameState.Paused;
         PauseScreen.SetActive(true);
+
+        GameManager.Singleton.SaveGame();
     }
 
     public void Resume() {
@@ -104,6 +107,14 @@ public class Player : MonoBehaviour
         lockOnSQRDistance = Mathf.Infinity;
 
         StartCoroutine(VisualUpdate());
+    }
+
+    public void OnApplicationPause(bool pause) {
+        if (pause) Pause();
+    }
+
+    public void OnApplicationFocus(bool focus) {
+        if (!focus) Pause();
     }
 }
 

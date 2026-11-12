@@ -53,15 +53,16 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        if (fileLoaded == false) {
+        /*if (fileLoaded == false) {
             currentSave = new SaveData();
-        }
+        }*/
 
         gameState = previousState;
         return currentSave;
     }
 }
 
+[System.Serializable]
 public struct SaveData {
     public string version;
 
