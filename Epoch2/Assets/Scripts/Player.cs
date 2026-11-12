@@ -6,6 +6,7 @@ public class Player : MonoBehaviour
     public static Player Singleton;
 
     public float health;
+    public float maxHealth;
 
     public Attack[] attacks;
     private int currentAttackIndex=0;
