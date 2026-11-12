@@ -24,6 +24,8 @@ public class GameManager : MonoBehaviour
     void Start() {
         LoadGame();
 
+        Debug.Log(currentSave.version);
+
         gameState = GameState.Running;
     }
 
