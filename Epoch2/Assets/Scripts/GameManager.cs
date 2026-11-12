@@ -11,7 +11,7 @@ public enum GameState {
 public class GameManager : MonoBehaviour
 {
     public static GameManager Singleton;
-    [HideInInspector] public GameState gameState; //default value
+    /*[HideInInspector]*/ public GameState gameState; //default value
     
     public SaveData currentSave;
 
@@ -22,17 +22,26 @@ public class GameManager : MonoBehaviour
     }
 
     void Start() {
-        gameState = GameState.Loading;
         LoadGame();
+
+        gameState = GameState.Running;
     }
 
     public void SaveGame() {
+        GameState previousState = gameState;
+        gameState = GameState.Saving;
+
         string jsonData = JsonUtility.ToJson(currentSave);
         string filePath = Application.persistentDataPath + "/saveData.json";
         System.IO.File.WriteAllText(filePath, jsonData);
+
+        gameState = previousState;
     }
 
     public SaveData LoadGame() {
+        GameState previousState = gameState;
+        gameState = GameState.Loading;
+
         string filePath = Application.persistentDataPath + "/saveData.json";
         bool fileLoaded = false;
 
@@ -47,6 +56,8 @@ public class GameManager : MonoBehaviour
         if (fileLoaded == false) {
             currentSave = new SaveData();
         }
+
+        gameState = previousState;
         return currentSave;
     }
 }

@@ -23,7 +23,10 @@ public class Player : MonoBehaviour
     private float lockOnTime;
     private float minLockOnDistance = 20f;
 
+    public GameObject PauseScreen;
+
     public void Shoot() {
+        if (GameManager.Singleton.gameState != GameState.Running) return; 
         if (Time.time < offCooldown) return; // not yet off cooldown!!
         offCooldown = Time.time+attacks[currentAttackIndex].cooldown;
 
@@ -39,14 +42,22 @@ public class Player : MonoBehaviour
     }
 
     public void Pause() {
-        
+        GameManager.Singleton.gameState = GameState.Paused;
+        PauseScreen.SetActive(true);
+    }
+
+    public void Resume() {
+        GameManager.Singleton.gameState = GameState.Running;
+        PauseScreen.SetActive(false);
     }
 
     public void Move(InputAction.CallbackContext context) {
+        if (GameManager.Singleton.gameState != GameState.Running) return; 
         inputDirection = context.ReadValue<Vector2>();
     }
 
     public IEnumerator VisualUpdate() {
+        if (GameManager.Singleton.gameState != GameState.Running) yield return new WaitUntil(() => GameManager.Singleton.gameState != GameState.Running);
         shipTransform.localRotation = Quaternion.Slerp(shipTransform.localRotation, Quaternion.Euler(0,0,inputDirection.x*20),0.185f);
         shipTransform.localPosition = Vector3.Lerp(shipTransform.localPosition, shipOffset+new Vector3(inputDirection.x,0,0),0.185f);
 
