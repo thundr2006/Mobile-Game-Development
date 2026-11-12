@@ -874,6 +874,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   gameState: 0
+  currentSave:
+    version: p.0.1
 --- !u!4 &967016716
 Transform:
   m_ObjectHideFlags: 0
