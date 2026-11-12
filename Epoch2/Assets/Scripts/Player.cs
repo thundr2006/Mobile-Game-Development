@@ -62,7 +62,7 @@ public class Player : MonoBehaviour
     public IEnumerator VisualUpdate() {
         if (GameManager.Singleton.gameState != GameState.Running) yield return new WaitUntil(() => GameManager.Singleton.gameState != GameState.Running);
         shipTransform.localRotation = Quaternion.Slerp(shipTransform.localRotation, Quaternion.Euler(0,0,inputDirection.x*20),0.185f);
-        shipTransform.localPosition = Vector3.Lerp(shipTransform.localPosition, shipOffset+new Vector3(inputDirection.x,0,0),0.185f);
+        shipTransform.localPosition = Vector3.Lerp(shipTransform.localPosition, shipOffset+new Vector3(inputDirection.x*0.9f,0,0),0.1f);
 
         if ((lockOnTarget && !TryLockOn(lockOnTarget)) || Time.time - lockOnTime > 0.5f) {
             lockOnSQRDistance = Mathf.Infinity;
