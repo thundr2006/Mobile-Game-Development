@@ -6,6 +6,7 @@ public class Player : MonoBehaviour
     public static Player Singleton;
 
     public float health;
+    public float maxHealth;
 
     public Attack[] attacks;
     private int currentAttackIndex=0;
@@ -24,6 +25,7 @@ public class Player : MonoBehaviour
     private float minLockOnDistance = 20f;
 
     public GameObject PauseScreen;
+    public Image Healthbar;
 
     public void Shoot() {
         if (GameManager.Singleton.gameState != GameState.Running) return; 
@@ -77,7 +79,12 @@ public class Player : MonoBehaviour
 
     public void DealDamage(float damage) {
         health-=damage;
-        health= health < 0 ? 0 : health; //Forces health to be greater than 0.
+        health= health < 0 ? 0 : health; //Forces health to be greater than 0
+        UpdateHealth();
+    }
+
+    public void UpdateHealth() {
+        Healthbar.fillAmount = health/maxHealth;
     }
 
     public bool TryLockOn(Entity target) {
@@ -115,6 +122,12 @@ public class Player : MonoBehaviour
 
     public void OnApplicationFocus(bool focus) {
         if (!focus) Pause();
+    }
+
+    public void OnValidate() //on inspector changes
+    {
+        if (Application.isEditor) return;
+        UpdateHealth();
     }
 }
 
