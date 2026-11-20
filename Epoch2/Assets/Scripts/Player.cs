@@ -35,11 +35,14 @@ public class Player : MonoBehaviour
         GameObject projectile = Instantiate(
             attacks[currentAttackIndex].prefab, 
             shipTransform.position, 
-            Quaternion.identity);
+            attacks[currentAttackIndex].prefab.transform.rotation);
         
         if (lockOnTarget) {
             PlayerProjectile projectileScript = projectile.GetComponent<PlayerProjectile>();
             projectileScript.velocity = (lockOnTarget.transform.position-shipTransform.position).normalized*projectileScript.velocity.magnitude;
+            //no y
+            Vector3 rotationTowards = (projectileScript.velocity - Vector3.up*projectileScript.velocity.y).normalized;
+            projectile.transform.rotation = Quaternion.LookRotation(rotationTowards, Vector3.up) * projectile.transform.rotation;
         }
     }
 

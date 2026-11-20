@@ -33,6 +33,7 @@ public class PlayerProjectile : Entity
     }
 
     void OnDestroy() {
+        if (!onDestroyPrefab) return;
         Instantiate(onDestroyPrefab, transform.position, transform.rotation);
     }
 }

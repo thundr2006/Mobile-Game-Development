@@ -659,7 +659,7 @@ MonoBehaviour:
   health: 100
   maxHealth: 100
   attacks:
-  - prefab: {fileID: 8662982804053560487, guid: 24da2288a6d31b14ebf83c5f7ffa2566, type: 3}
+  - prefab: {fileID: 6316057254599245101, guid: c5f437a60798f9b4d90930883f0c95cc, type: 3}
     cooldown: 0.5
   shipTransform: {fileID: 313062791}
   lockOnTransform: {fileID: 1247667843}
