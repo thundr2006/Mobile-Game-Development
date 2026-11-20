@@ -8,6 +8,7 @@ public class PlayerProjectile : Entity
     public Vector3 velocity;
     private readonly List<Entity> collidedEntities = new List<Entity>();
     private int collisionsRemaining=1;
+    public GameObject onDestroyPrefab; // like if it spawns a explosion particle..
 
     void Start() {
         Destroy(gameObject, destroyTimer);
@@ -29,5 +30,9 @@ public class PlayerProjectile : Entity
         collisionsRemaining--;
         
         if (collisionsRemaining == 0) Destroy(gameObject); //If the projectile has used up all its collisions.. destroy! (negative collisions means its just not destroyed..)
+    }
+
+    void OnDestroy() {
+        Instantiate(onDestroyPrefab, transform.position, transform.rotation);
     }
 }
