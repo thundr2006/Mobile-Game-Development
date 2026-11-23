@@ -22,28 +22,74 @@ public class Player : MonoBehaviour
     private float lockOnSQRDistance;
     public Transform lockOnTransform;
     private float lockOnTime;
-    private float minLockOnDistance = 20f;
+    private float maxLockOnDistance = 20f;
+    [HideInInspector] public GameObject hitscanObject;
+    [HideInInspector] public bool shootHeldDown;
 
     public GameObject PauseScreen;
     public Image Healthbar;
 
-    public void Shoot() {
-        if (GameManager.Singleton.gameState != GameState.Running) return; 
-        if (Time.time < offCooldown) return; // not yet off cooldown!!
-        offCooldown = Time.time+attacks[currentAttackIndex].cooldown;
+    public IEnumerator Shoot() {
+        if (!shootHeldDown) {
+            if (hitscanObject) Destroy(hitscanObject);
+            yield break;
+        };
+        if (GameManager.Singleton.gameState != GameState.Running) yield break; 
+        if (Time.time < offCooldown) yield break; // not yet off cooldown!!
+        Attack currentAttack = attacks[currentAttackIndex];
+        if (currentAttack.attackType==AttackType.Projectile) {
+            offCooldown = Time.time+currentAttack.projectileCooldown;
 
-        GameObject projectile = Instantiate(
-            attacks[currentAttackIndex].prefab, 
+            GameObject projectile = Instantiate(
+            currentAttack.prefab, 
             shipTransform.position, 
-            attacks[currentAttackIndex].prefab.transform.rotation);
-        
-        if (lockOnTarget) {
-            PlayerProjectile projectileScript = projectile.GetComponent<PlayerProjectile>();
-            projectileScript.velocity = (lockOnTarget.transform.position-shipTransform.position).normalized*projectileScript.velocity.magnitude;
-            //no y
-            Vector3 rotationTowards = (projectileScript.velocity - Vector3.up*projectileScript.velocity.y).normalized;
-            projectile.transform.rotation = Quaternion.LookRotation(rotationTowards, Vector3.up) * projectile.transform.rotation;
+            currentAttack.prefab.transform.rotation);
+
+            if (lockOnTarget) {
+                PlayerProjectile projectileScript = projectile.GetComponent<PlayerProjectile>();
+                projectileScript.velocity = (lockOnTarget.transform.position-shipTransform.position).normalized*projectileScript.velocity.magnitude;
+                //no y
+                Vector3 rotationTowards = (projectileScript.velocity - Vector3.up*projectileScript.velocity.y).normalized;
+                projectile.transform.rotation = Quaternion.LookRotation(rotationTowards, Vector3.up) * projectile.transform.rotation;
+            }
+            yield return new WaitForSeconds(currentAttack.projectileCooldown); // wait the attack cooldown
+        } else { //assume hitscan
+            if (currentAttack.hitscanCharge > 0) {
+                if (!hitscanObject) { // if there isnt an existing hitscan object.. create one
+                    hitscanObject = Instantiate(
+                        currentAttack.prefab, 
+                        shipTransform.position + transform.forward*0.35f, 
+                        currentAttack.prefab.transform.rotation);
+
+                    hitscanObject.GetComponent<PlayerHitscan>().spriteSize = hitscanObject.GetComponent<PlayerHitscan>().spriteRenderer.size;
+                }
+                
+                PlayerHitscan hitscanScript = hitscanObject.GetComponent<PlayerHitscan>();
+                hitscanObject.transform.position = shipTransform.position+Vector3.forward*0.35f;
+                hitscanScript.SetTarget( lockOnTarget ? lockOnTarget.transform.position-hitscanObject.transform.position : transform.forward*maxLockOnDistance);
+                
+                if (lockOnTarget) {
+                    lockOnTarget.DealDamage(hitscanScript.dps*visualSPF);
+                }
+                attacks[currentAttackIndex].hitscanCharge-=visualSPF;
+                yield return new WaitForSeconds(visualSPF); // wait visual seconds per frame
+            } else {
+                shootHeldDown = false; // looks like there's no charge!
+            }
         }
+
+        StartCoroutine(Shoot());
+    }
+
+    public void ShootTriggerDown() {
+        shootHeldDown = true;
+        StartCoroutine(Shoot());
+        
+    }
+
+    public void ShootTriggerUp() {
+        shootHeldDown = false;
+        if (hitscanObject) Destroy(hitscanObject);
     }
 
     public void Pause() {
@@ -80,6 +126,18 @@ public class Player : MonoBehaviour
         StartCoroutine(VisualUpdate());
     }
 
+    public void FixedUpdate() {
+        for (int i = 0; i < attacks.Length; i++) {
+            if (attacks[i].hitscanCharge!=attacks[i].hitscanMaxCharge && attacks[i].attackType==AttackType.Hitscan) { // regenerate charge for hitscan attacks
+                if (i==currentAttackIndex && shootHeldDown) continue; // if in use, dont regenerate..
+                attacks[i].hitscanCharge+=attacks[i].hitscanChargeRegen*Time.fixedDeltaTime;
+                if (attacks[i].hitscanCharge > attacks[i].hitscanMaxCharge) { // clamp
+                    attacks[i].hitscanCharge = attacks[i].hitscanMaxCharge;
+                }
+            }
+        }
+    }
+
     public void DealDamage(float damage) {
         health-=damage;
         health= health < 0 ? 0 : health; //Forces health to be greater than 0
@@ -93,7 +151,7 @@ public class Player : MonoBehaviour
     public bool TryLockOn(Entity target) {
         float SQRDistance = (target.transform.position-(transform.position+shipOffset+new Vector3(inputDirection.x*2f,0,0))).sqrMagnitude;
         if (!target.gameObject.activeSelf||!target.enabled||!target.canLockOn) return false; // if script is not active, or cant lock on then return false
-        if (SQRDistance > minLockOnDistance) return false;
+        if (SQRDistance > maxLockOnDistance) return false;
         if (SQRDistance < lockOnSQRDistance || target == lockOnTarget) {
             lockOnSQRDistance = SQRDistance;
             lockOnTarget = target;
@@ -116,6 +174,12 @@ public class Player : MonoBehaviour
         visualSPF = 1/30f;
         lockOnSQRDistance = Mathf.Infinity;
 
+        for (int i = 0; i < attacks.Length; i++) {
+            if (attacks[i].attackType==AttackType.Hitscan) {
+                attacks[i].hitscanCharge=attacks[i].hitscanMaxCharge; // set to max charge for hitscan attacks
+            }
+        }
+
         StartCoroutine(VisualUpdate());
     }
 
@@ -134,7 +198,17 @@ public class Player : MonoBehaviour
     }
 }
 
+public enum AttackType {
+    Projectile,
+    Hitscan
+}
+
 [System.Serializable] public struct Attack {
     public GameObject prefab;
-    public float cooldown;
+    public AttackType attackType;
+    public float projectileCooldown;
+
+    public float hitscanCharge; //cooldown equiv but for hitscan continuous attacks!
+    public float hitscanMaxCharge;
+    public float hitscanChargeRegen; // charge regen per second
 }
