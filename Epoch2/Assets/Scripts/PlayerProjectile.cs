@@ -15,6 +15,7 @@ public class PlayerProjectile : Entity
     }
 
     void FixedUpdate() {
+        transform.rotation = Quaternion.LookRotation(velocity, transform.position-Player.Singleton.transform.position) * Quaternion.Euler(90,0,0);
         transform.position += velocity*Time.fixedDeltaTime;
     }
     public virtual void OnTriggerEnter(Collider other) {

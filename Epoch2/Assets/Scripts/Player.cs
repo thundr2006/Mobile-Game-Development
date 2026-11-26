@@ -67,7 +67,7 @@ public class Player : MonoBehaviour
                 
                 PlayerHitscan hitscanScript = hitscanObject.GetComponent<PlayerHitscan>();
                 hitscanObject.transform.position = shipTransform.position+Vector3.forward*0.35f;
-                hitscanScript.SetTarget(lockOnTarget ? lockOnTarget.transform.position-hitscanObject.transform.position: transform.forward*maxLockOnDistance, hitscanObject.transform.position-transform.position);
+                hitscanScript.SetTarget(lockOnTarget ? lockOnTarget.transform.position-hitscanObject.transform.position: transform.forward*maxLockOnDistance);
                 
                 if (lockOnTarget) {
                     lockOnTarget.DealDamage(hitscanScript.dps*visualSPF);
